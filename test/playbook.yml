@@ -1,0 +1,25 @@
+---
+
+- hosts: local
+  gather_facts: no
+  vars:
+    pagerduty_maintenance_window_subdomain: 'inviqa'
+    pagerduty_maintenance_window_token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
+    pagerduty_maintenance_windows:
+      - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
+        description: 'Nightly MySQL backup'
+        service_ids:
+          - PJ4KK82
+        dates:
+          - start: '2015-12-02T03:00:00Z'
+            end: '2015-12-02T03:15:00Z'
+          - start: '2015-12-03T03:00:00Z'
+            end: '2015-12-03T03:15:00Z'
+          - start: '2015-12-04T03:00:00Z'
+            end: '2015-12-04T03:15:00Z'
+          - start: '2015-12-05T03:00:00Z'
+            end: '2015-12-05T03:15:00Z'
+          - start: '2015-12-06T03:00:00Z'
+            end: '2015-12-06T03:15:00Z'
+  roles:
+    - { role: '../../' }

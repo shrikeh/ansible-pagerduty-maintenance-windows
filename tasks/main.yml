@@ -1,0 +1,23 @@
+---
+- name: Because we need to create valid JSON and then pass it in later we create a file cache locally
+  template:
+    src: 'json.j2'
+    dest: "/Users/bhanlon/Workspace/Work/inviqa/ansible-pagerduty-maintenance-window/cache/{{ [item.0, item.1] | join('') | hash }}"
+  register: pagerduty_maintenance_window_cache
+  with_subelements:
+    - pagerduty_maintenance_windows
+    - dates
+
+- name: Set up maintenance windows
+  local_action:
+    module: uri
+    url: "{{ pagerduty_maintenance_window_api_uri }}"
+    method: POST
+    body: " {{ lookup('file', item.path )}} "
+    return_content: yes
+    HEADER_Content-Type: 'application/json'
+    HEADER_Authorization: "Token token={{ item.token | default(pagerduty_maintenance_window_token)}}"
+    timeout: "{{ pagerduty_maintenance_window_api_timeout }}"
+    status_code: "{{ pagerduty_maintenance_window_api_response_code }}"
+  with_items: pagerduty_maintenance_window_cache.results
+...

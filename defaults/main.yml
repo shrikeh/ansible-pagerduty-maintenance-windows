@@ -1,0 +1,9 @@
+---
+
+pagerduty_maintenance_window_api_domain: "{{ pagerduty_maintenance_window_subdomain | mandatory }}.pagerduty.com"
+pagerduty_maintenance_window_api_endpoint: '/api/v1/maintenance_windows'
+pagerduty_maintenance_window_api_uri: "https://{{ pagerduty_maintenance_window_api_domain }}{{ pagerduty_maintenance_window_api_endpoint }}"
+pagerduty_maintenance_window_api_timeout: 30
+pagerduty_maintenance_window_api_response_code: 201
+ 
+...
