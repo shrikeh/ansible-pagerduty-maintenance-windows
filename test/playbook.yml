@@ -12,5 +12,6 @@
         dates:
           - start:  "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_START') }}"
             end:    "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_END') }}"
+            description: 'Special backup'
   roles:
     - { role: '../../' }

@@ -1,9 +1,9 @@
 {
   "maintenance_window": {
-    "start_time": {{ item.1.start | to_json }},
-    "end_time": {{ item.1.end | to_json }},
-    "description":  {{ item.0.description | to_json }},
-    "service_ids": {{ item.0.service_ids | to_json }}
+    "start_time": {{ item.1.start | mandatory | to_json }},
+    "end_time": {{ item.1.end | mandatory | to_json }},
+    "description":  {{ item.1.description | default(item.0.description) | default('') | to_json }},
+    "service_ids": {{ item.0.service_ids | mandatory | to_json }}
   }
 {% if item.0.requester_id is defined %}
   ,

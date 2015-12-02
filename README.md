@@ -4,17 +4,85 @@
 [![Build Status](https://travis-ci.org/shrikeh/ansible-pagerduty-maintenance-windows.svg)](https://travis-ci.org/shrikeh/ansible-pagerduty-maintenance-windows)
 [![GitHub Stars](https://img.shields.io/github/stars/shrikeh/ansible-server-density-monitoring.svg)](https://github.com/shrikeh/ansible-pagerduty-maintenance-windows)
 
-Ansible role to create PagerDuty scheduled maintenance windows for services using the API.
+[Ansible][ansible] role to create [PagerDuty][pagerduty] scheduled maintenance windows for services using the API.
 
 ## Requirements
 ------------
-
-None.
+[`httplib2`][httplib2] is required.
 
 ## Role Variables
 --------------
 
-None.
+##### `pagerduty_maintenance_windows`
+Default: `none`
+
+**Required**. List that defines the windows. Each window (item) in the list has the following properties:
+
+- `token`: Optional. The authorisation token to use with this call. If not specified, `pagerduty_maintenance_window_token` is used. One or the other must be specified, i.e. if you do not set `pagerduty_maintenance_window_token` then you must specify a token for every window.
+- `url`: Optional. The endpoint for the API call. If this is omitted, then `pagerduty_maintenance_window_api_url` is used instead. One or the other must be specified, i.e. if you do not set `pagerduty_maintenance_window_api_url` then you must specify a url for every window.
+- `description`: Optional. Description (reason) for the service window.
+- `service_ids`: **Required**. List of service IDs to set up the window for.
+- `dates`: **Required**. List of dates for the window. You can have multiple dates; each list item is a new start/end pair, together with an optional description, i.e.:
+
+```YAML
+dates:
+  - start:  		'2016-12-02T14:00:00Z'
+    end:    		'2016-12-02T15:00:00Z'
+  - start:  		'2016-12-03T14:00:00Z'
+    end:    		'2016-12-03T15:00:00Z'
+    description: 	'Special maintenance window'
+
+```
+This allows you to specify the same window for multiple dates (useful if you have a recurring scheduled backup at 3am, I have found...).
+
+- `timeout`: Optional. You can give a specific URI call a different timeout if you so wish. Otherwise, it uses the value of `pagerduty_maintenance_window_api_timeout`.
+
+A fully-specified window is thus:
+```YAML
+- token: 'foobarbaztoken'
+  url: 'https://shrikeh.pagerduty.com/api/v1/maintenance_window'
+  description: 'Daily backup'
+  timeout: 35
+  service_ids:
+    - 'ABCDE'
+    - 'UWXYZ'
+  dates:
+    - start:  		'2016-12-02T14:00:00Z'
+      end:    		'2016-12-02T15:00:00Z'
+    - start:  		'2016-12-03T14:00:00Z'
+      end:    	    '2016-12-03T15:00:00Z'
+      description: 	'Second backup'
+```
+
+##### `pagerduty_maintenance_window_subdomain`
+Default: `none`
+
+Required if `pagerduty_maintenance_window_api_domain` is not overridden, or a window does not have a uri. The subdomain of the PagerDuty endpoint, e.g. `shrikeh` for `shrikeh.pagerduty.com`.
+
+##### `pagerduty_maintenance_window_api_domain`
+Default: `"{{ pagerduty_maintenance_window_subdomain | mandatory }}.pagerduty.com"`
+
+Required to be overridden if not every list item specifies a `url` key and `pagerduty_maintenance_window_subdomain` is not set.
+
+##### `pagerduty_maintenance_window_api_endpoint`
+Default: `/api/v1/maintenance_windows`
+
+Endpoint for the call, as specified on the [PagerDuty API documentation][pagerduty_api_docs].
+
+##### `pagerduty_maintenance_window_api_url`
+Default: `"https://{{ pagerduty_maintenance_window_api_domain }}{{ pagerduty_maintenance_window_api_endpoint }}"`
+
+Fully qualified URI for the API call, i.e. `shrikeh.pagerduty.com/api/v1/maintenance_windows`.
+
+##### `pagerduty_maintenance_window_token`
+Default: `none`
+
+If a `token` is not specified as a key for an item in `pagerduty_maintenance_windows` then this is used.
+
+##### `pagerduty_maintenance_window_api_timeout`
+Default: `30`
+
+Time in seconds before the API call times out. Can be overridden on a per-window setting using the `timeout` key.
 
 ## Dependencies
 ------------
@@ -26,7 +94,15 @@ None.
 
 ```YAML
 ---
-    - hosts: servers
+    - hosts: local
+      pagerduty_maintenance_windows:
+        - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
+          description: 'Nightly MySQL backup'
+          service_ids:
+            -  "ABCDE"
+          dates:
+            - start:  '2016-12-02T14:00:00Z'
+              end:    '2016-12-02T15:00:00Z'
       roles:
          - { role: shrikeh.pagerduty-maintenance-windows }
 ...
@@ -41,6 +117,9 @@ None.
 ------------------
 Contact me on Twitter @[barney_hanlon][twitter]
 
-
+[ansible]:http://www.ansible.com/ "Ansible home page"
+[pagerduty]: https://www.pagerduty.com/ "PagerDuty home page"
 [licence]: https://raw.githubusercontent.com/shrikeh/ansible-server-density-monitoring/master/LICENSE "Link to the license in the repository"
 [twitter]: https://twitter.com/barney_hanlon "Link to my Twitter page"
+[httplib2]: https://pypi.python.org/pypi/httplib2 "Python httplib2 library"
+[pagerduty_api_docs]: https://developer.pagerduty.com/documentation/rest/maintenance_windows/create "PagerDuty API documentation for maintenance windows"
