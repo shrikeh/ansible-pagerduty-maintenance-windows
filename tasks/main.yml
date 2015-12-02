@@ -1,23 +1,47 @@
 ---
+
+- name: Stat the cache directory, used later for cleaning up
+  local_action:
+   module: stat
+   path: "{{ pagerduty_maintenance_windows_json_cache_path | mandatory | realpath }}"
+  register: pagerduty_maintenance_windows_json_cache_stat
+
+- name: Create the cache directory
+  local_action:
+    module: file
+    state: directory
+    path: "{{ pagerduty_maintenance_windows_json_cache_path | mandatory | realpath }}"
+    mode: "{{ pagerduty_maintenance_windows_json_cache_mode | default(omit) }}"
+    owner: "{{ pagerduty_maintenance_windows_json_cache_owner | default(omit) }}"
+    group: "{{ pagerduty_maintenance_windows_json_cache_group | default(omit) }}"
+  register: pagerduty_maintenance_windows_create_cache_dir
+  run_once: yes
+
+
 - name: Because we need to create valid JSON and then pass it in later we create a file cache locally
-  template:
-    src: 'json.j2'
-    dest: "/Users/bhanlon/Workspace/Work/inviqa/ansible-pagerduty-maintenance-window/cache/{{ [item.0, item.1] | join('') | hash }}"
+  local_action:
+    module: template
+    src: "{{ pagerduty_maintenance_windows_json_template }}"
+    dest: "{{ pagerduty_maintenance_windows_json_cache_path | realpath}}/{{ [item.0, item.1] | join('') | hash }}"
   register: pagerduty_maintenance_window_cache
   with_subelements:
     - pagerduty_maintenance_windows
     - dates
+  notify:
+    - "{{ pagerduty_maintenance_windows_json_cache_notify }}"
 
 - name: Set up maintenance windows
   local_action:
     module: uri
     url: "{{ pagerduty_maintenance_window_api_uri }}"
     method: POST
-    body: " {{ lookup('file', item.path )}} "
+    body: " {{ lookup('file', item.dest )}} "
     return_content: yes
     HEADER_Content-Type: 'application/json'
-    HEADER_Authorization: "Token token={{ item.token | default(pagerduty_maintenance_window_token)}}"
+    HEADER_Authorization: "Token token={{ item.token | default(pagerduty_maintenance_window_token) }}"
     timeout: "{{ pagerduty_maintenance_window_api_timeout }}"
     status_code: "{{ pagerduty_maintenance_window_api_response_code }}"
   with_items: pagerduty_maintenance_window_cache.results
+  notify:
+    - "{{ pagerduty_maintenance_windows_json_cache_notify }}"
 ...

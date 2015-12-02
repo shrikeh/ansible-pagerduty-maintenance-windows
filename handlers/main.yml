@@ -1,0 +1,9 @@
+---
+- name: "{{ pagerduty_maintenance_windows_json_cache_notify }}"
+  local_action:
+    module: file
+    state: absent
+    path: "{{ pagerduty_maintenance_windows_json_cache_path | mandatory | realpath }}"
+  when: pagerduty_maintenance_windows_json_cache_dir_cleanup
+
+...

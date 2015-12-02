@@ -5,5 +5,11 @@ pagerduty_maintenance_window_api_endpoint: '/api/v1/maintenance_windows'
 pagerduty_maintenance_window_api_uri: "https://{{ pagerduty_maintenance_window_api_domain }}{{ pagerduty_maintenance_window_api_endpoint }}"
 pagerduty_maintenance_window_api_timeout: 30
 pagerduty_maintenance_window_api_response_code: 201
- 
+
+pagerduty_maintenance_windows_json_template: 'json.j2'
+
+pagerduty_maintenance_windows_json_cache_path: './.pd_json_cache/'
+pagerduty_maintenance_windows_json_cache_dir_cleanup: yes
+
+pagerduty_maintenance_windows_json_cache_notify: 'Clear up PagerDuty maintenance window cache directory'
 ...
