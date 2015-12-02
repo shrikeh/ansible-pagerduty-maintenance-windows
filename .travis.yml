@@ -27,9 +27,10 @@ env:
 
 install:
     - pip install --upgrade pip
-    - pip install "ansible $PIP_ANSIBLE_VERSION"
+    - pip install -r requirements.txt
+    - pip install --pre "ansible $PIP_ANSIBLE_VERSION"
 script:
   - ansible-playbook --version
   - ansible-playbook --syntax-check -i test/inventory test/playbook.yml
-  - ansible-playbook  -i test/inventory -l test test/playbook.yml --connection=local -vvvv
+  - ansible-playbook  -i test/inventory -l travis test/playbook.yml --connection=local -vvvv
 ...
