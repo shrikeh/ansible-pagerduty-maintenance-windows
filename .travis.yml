@@ -37,5 +37,5 @@ install:
 script:
   - ansible-playbook --version
   - ansible-playbook --syntax-check -i test/inventory test/playbook.yml
-  - ansible-playbook  -i test/inventory -l travis test/playbook.yml --connection=local -vvvv
+  - ansible-playbook  -i test/inventory -l travis test/playbook.yml --connection=local
 ...
