@@ -43,7 +43,7 @@ Default: `none`
 - `url`: Optional. The endpoint for the API call. If this is omitted, then `pagerduty_maintenance_window_api_url` is used instead. One or the other must be specified, i.e. if you do not set `pagerduty_maintenance_window_api_url` then you must specify a url for every window.
 - `description`: Optional. Description (reason) for the service window.
 - `service_ids`: **Required**. List of service IDs to set up the window for.
-- `dates`: **Required**. List of dates for the window. You can have multiple dates; each list item is a new start/end pair, together with an optional description, i.e.:
+- `dates`: **Required**. List of dates for the window. You can have multiple dates; each list item is a new `start`/`end` pair, together with an optional `description`, i.e.:
 
 ```YAML
 dates:
@@ -121,6 +121,12 @@ None.
         pagerduty_maintenance_window_host_service_ids:
           - ABCDEF
           - GHIJK
+      - hosts: webservers
+        vars:
+          # Better to put these in group_vars/webservers/pagerduty-maintenance-windows.yml
+          pagerduty_maintenance_window_host_service_ids:
+            - ABCDEF
+            - DEFGH
     - hosts: all
       vars:
         pagerduty_maintenance_windows:
@@ -134,6 +140,10 @@ None.
          - { role: shrikeh.pagerduty-maintenance-windows }
 ...
 ```
+## @todo
+-------
+
+Document outstanding default variables.
 
 ## License
 -------
