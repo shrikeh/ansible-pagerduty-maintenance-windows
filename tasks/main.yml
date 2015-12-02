@@ -34,7 +34,7 @@
 - name: Set up maintenance windows
   local_action:
     module: uri
-    url: "{{ {{ item.url | default(pagerduty_maintenance_window_api_url) }}"
+    url: "{{ item.url | default(pagerduty_maintenance_window_api_url) }}"
     method: POST
     body: " {{ lookup('file', item.dest )}} "
     return_content: yes
