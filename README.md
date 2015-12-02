@@ -15,6 +15,7 @@ Secondly, because a lot of the variables you can stick in a `group_vars/all/page
 ```YAML
 ---
 # group_vars/databases/pagerduty-maintenance.yml
+
 pagerduty_maintenance_window_host_service_ids:
   - ABCDEF
   - GHIJK
@@ -24,7 +25,6 @@ pagerduty_maintenance_window_host_service_ids:
 The advantage? Because humans suck at remembering things, whereas YAML files don't. Take a look at the example playbook below for more info.
 
 ![PagerDuty logo](https://www.pagerduty.com/wp-content/themes/pd2015_git_sass/assets/img/pagerduty-logo-500px.png)
-
 
 
 ## Requirements
@@ -78,7 +78,7 @@ A fully-specified window to append to `pagerduty_maintenance_windows` is thus:
 ##### `pagerduty_maintenance_window_subdomain`
 Default: `none`
 
-Required if `pagerduty_maintenance_window_api_domain` is not overridden, or a window does not have a uri. The subdomain of the PagerDuty endpoint, e.g. `shrikeh` for `shrikeh.pagerduty.com`.
+Required if `pagerduty_maintenance_window_api_domain` is not overridden, or a window does not have a `url`. The subdomain of the PagerDuty endpoint, e.g. `shrikeh` for `shrikeh.pagerduty.com`.
 
 ##### `pagerduty_maintenance_window_api_domain`
 Default: `"{{ pagerduty_maintenance_window_subdomain | mandatory }}.pagerduty.com"`
@@ -131,11 +131,11 @@ None.
       vars:
         pagerduty_maintenance_windows:
           - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
-            description: 'Nightly MySQL backup'
             service_ids: "{{ pagerduty_maintenance_window_host_service_ids }}"
             dates:
-              - start:  '2016-12-02T14:00:00Z'
-                end:    '2016-12-02T15:00:00Z'
+              - start:        '2016-12-02T14:00:00Z'
+                end:          '2016-12-02T15:00:00Z'
+                description:  'Nightly MySQL backup'
       roles:
          - { role: shrikeh.pagerduty-maintenance-windows }
 ...
