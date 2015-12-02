@@ -6,6 +6,27 @@
 
 [Ansible][ansible] role to create [PagerDuty][pagerduty] scheduled maintenance windows for services using the API.
 
+### Why an Ansible role?
+
+Firstly, because it allows automation if you wish to coincide a maintenance window with your Ansible provisioning.
+
+Secondly, because a lot of the variables you can stick in a `group_vars/all/pagerduty-maintenance.yml` or [ansible_vault][Vault], you can largely forget most of the settings and just concentrate on the dates. For extra ease, you can have hosts associated with certain services:
+
+```YAML
+---
+# group_vars/databases/pagerduty-maintenance.yml
+pagerduty_maintenance_window_host_service_ids:
+  - ABCDEF
+  - GHIJK
+...
+```
+
+The advantage? Because humans suck at remembering things, whereas YAML files don't. Take a look at the example playbook below for more info.
+
+![PagerDuty logo](https://www.pagerduty.com/wp-content/themes/pd2015_git_sass/assets/img/pagerduty-logo-500px.png)
+
+
+
 ## Requirements
 ------------
 [`httplib2`][httplib2] is required.
@@ -37,7 +58,7 @@ This allows you to specify the same window for multiple dates (useful if you hav
 
 - `timeout`: Optional. You can give a specific URI call a different timeout if you so wish. Otherwise, it uses the value of `pagerduty_maintenance_window_api_timeout`.
 
-A fully-specified window is thus:
+A fully-specified window to append to `pagerduty_maintenance_windows` is thus:
 ```YAML
 - token: 'foobarbaztoken'
   url: 'https://shrikeh.pagerduty.com/api/v1/maintenance_window'
@@ -46,7 +67,7 @@ A fully-specified window is thus:
   service_ids:
     - 'ABCDE'
     - 'UWXYZ'
-  dates:
+  dates: # Add two separate windows, one hour in duration, 24 hours apart.
     - start:  		'2016-12-02T14:00:00Z'
       end:    		'2016-12-02T15:00:00Z'
     - start:  		'2016-12-03T14:00:00Z'
@@ -94,15 +115,21 @@ None.
 
 ```YAML
 ---
-    - hosts: local
-      pagerduty_maintenance_windows:
-        - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
-          description: 'Nightly MySQL backup'
-          service_ids:
-            -  "ABCDE"
-          dates:
-            - start:  '2016-12-02T14:00:00Z'
-              end:    '2016-12-02T15:00:00Z'
+    - hosts: databases
+      vars:
+        # Better to put these in group_vars/databases/pagerduty-maintenance-windows.yml
+        pagerduty_maintenance_window_host_service_ids:
+          - ABCDEF
+          - GHIJK
+    - hosts: all
+      vars:
+        pagerduty_maintenance_windows:
+          - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
+            description: 'Nightly MySQL backup'
+            service_ids: "{{ pagerduty_maintenance_window_host_service_ids }}"
+            dates:
+              - start:  '2016-12-02T14:00:00Z'
+                end:    '2016-12-02T15:00:00Z'
       roles:
          - { role: shrikeh.pagerduty-maintenance-windows }
 ...
@@ -119,6 +146,7 @@ Contact me on Twitter @[barney_hanlon][twitter]
 
 [ansible]:http://www.ansible.com/ "Ansible home page"
 [pagerduty]: https://www.pagerduty.com/ "PagerDuty home page"
+[ansible_vault]: http://docs.ansible.com/ansible/playbooks_vault.html "Ansible Vault documentation"
 [licence]: https://raw.githubusercontent.com/shrikeh/ansible-server-density-monitoring/master/LICENSE "Link to the license in the repository"
 [twitter]: https://twitter.com/barney_hanlon "Link to my Twitter page"
 [httplib2]: https://pypi.python.org/pypi/httplib2 "Python httplib2 library"
