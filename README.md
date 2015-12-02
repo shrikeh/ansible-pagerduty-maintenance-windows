@@ -10,7 +10,7 @@
 
 Firstly, because it allows automation if you wish to coincide a maintenance window with your Ansible provisioning.
 
-Secondly, because a lot of the variables you can stick in a `group_vars/all/pagerduty-maintenance.yml` or [ansible_vault][Vault], you can largely forget most of the settings and just concentrate on the dates. For extra ease, you can have hosts associated with certain services:
+Secondly, because a lot of the variables you can stick in a `group_vars/all/pagerduty-maintenance.yml` or [Vault][ansible_vault], you can largely forget most of the settings and just concentrate on the dates. For extra ease, you can have hosts associated with certain services:
 
 ```YAML
 ---
