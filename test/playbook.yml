@@ -4,7 +4,6 @@
   vars:
     pagerduty_maintenance_window_subdomain: 'shrikeh'
     pagerduty_maintenance_window_token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
-    pagerduty_maintenance_window_api_no_log: yes
     pagerduty_maintenance_windows:
       - token: "{{ lookup('env', 'PAGERDUTY_MAINTENANCE_WINDOW_TOKEN') }}"
         description: 'Nightly MySQL backup'

@@ -29,6 +29,7 @@
     - dates
   notify:
     - "{{ pagerduty_maintenance_windows_json_cache_notify }}"
+  no_log: "{{ pagerduty_maintenance_window_cache_no_log }}"
 
 - name: Set up maintenance windows
   local_action:
@@ -42,7 +43,7 @@
     timeout: "{{ pagerduty_maintenance_window_api_timeout }}"
     status_code: "{{ pagerduty_maintenance_window_api_response_code }}"
   with_items: pagerduty_maintenance_window_cache.results
-  no_log: "{{ {{ pagerduty_maintenance_window_api_no_log }}"
+  no_log: "{{ pagerduty_maintenance_window_api_no_log }}"
   notify:
     - "{{ pagerduty_maintenance_windows_json_cache_notify }}"
 ...

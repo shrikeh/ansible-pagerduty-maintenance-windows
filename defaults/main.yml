@@ -6,7 +6,8 @@ pagerduty_maintenance_window_api_uri: "https://{{ pagerduty_maintenance_window_a
 pagerduty_maintenance_window_api_timeout: 30
 pagerduty_maintenance_window_api_response_code: 201
 
-pagerduty_maintenance_window_api_no_log: no
+pagerduty_maintenance_window_cache_no_log: yes
+pagerduty_maintenance_window_api_no_log: yes
 
 pagerduty_maintenance_windows_json_template: 'json.j2'
 
