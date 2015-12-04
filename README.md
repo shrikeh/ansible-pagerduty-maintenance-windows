@@ -1,6 +1,6 @@
 # Ansible PagerDuty Maintenance Windows
-=========
-[![Ansible Role](https://img.shields.io/ansible/role/ansible-6320.svg)](https://galaxy.ansible.com/detail#/role/6320)
+
+[![Ansible Role](https://img.shields.io/ansible/role/ansible-6373.svg)](https://galaxy.ansible.com/detail#/role/6373)
 [![Build Status](https://travis-ci.org/shrikeh/ansible-pagerduty-maintenance-windows.svg)](https://travis-ci.org/shrikeh/ansible-pagerduty-maintenance-windows)
 [![GitHub Stars](https://img.shields.io/github/stars/shrikeh/ansible-server-density-monitoring.svg)](https://github.com/shrikeh/ansible-pagerduty-maintenance-windows)
 
@@ -28,11 +28,10 @@ The advantage? Because humans suck at remembering things, whereas YAML files don
 
 
 ## Requirements
-------------
+
 [`httplib2`][httplib2] is required.
 
 ## Role Variables
---------------
 
 ##### `pagerduty_maintenance_windows`
 Default: `none`
@@ -68,9 +67,9 @@ A fully-specified window to append to `pagerduty_maintenance_windows` is thus:
     - 'ABCDE'
     - 'UWXYZ'
   dates: # Add two separate windows, one hour in duration, 24 hours apart.
-    - start:  		'2016-12-02T14:00:00Z'
-      end:    		'2016-12-02T15:00:00Z'
-    - start:  		'2016-12-03T14:00:00Z'
+    - start:  		  '2016-12-02T14:00:00Z'
+      end:    		  '2016-12-02T15:00:00Z'
+    - start:  		  '2016-12-03T14:00:00Z'
       end:    	    '2016-12-03T15:00:00Z'
       description: 	'Second backup'
 ```
@@ -157,7 +156,7 @@ Contact me on Twitter @[barney_hanlon][twitter]
 [ansible]:http://www.ansible.com/ "Ansible home page"
 [pagerduty]: https://www.pagerduty.com/ "PagerDuty home page"
 [ansible_vault]: http://docs.ansible.com/ansible/playbooks_vault.html "Ansible Vault documentation"
-[licence]: https://raw.githubusercontent.com/shrikeh/ansible-server-density-monitoring/master/LICENSE "Link to the license in the repository"
+[licence]: https://raw.githubusercontent.com/shrikeh/ansible-pagerduty-maintenance-windows/master/LICENSE "Link to the license in the repository"
 [twitter]: https://twitter.com/barney_hanlon "Link to my Twitter page"
 [httplib2]: https://pypi.python.org/pypi/httplib2 "Python httplib2 library"
 [pagerduty_api_docs]: https://developer.pagerduty.com/documentation/rest/maintenance_windows/create "PagerDuty API documentation for maintenance windows"
